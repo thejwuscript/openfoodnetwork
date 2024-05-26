@@ -1,0 +1,16 @@
+language: ruby
+services:
+  - postgresql
+  - redis
+before_install:
+  - nvm install --lts
+before_script:
+  - sudo --login --user=postgres psql -c "CREATE USER ofn WITH SUPERUSER CREATEDB PASSWORD 'f00d'"
+  - ./script/setup
+  - bundle exec rake db:create
+  - bundle exec rake db:schema:load
+script:
+  - sudo apt install -y chromium-browser
+  - sudo apt install -y chromium-chromedriver
+  - bundle exec rake db:test:prepare
+  - bundle exec rspec spec
